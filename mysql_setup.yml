@@ -1,0 +1,26 @@
+---
+- name: Create MySQL Database and User
+  hosts: node1
+  vars_files:
+    - vars/mysql_vault.yml
+  tasks:
+    - name: Start MySQL service
+      service:
+        name: mysql
+        state: started
+  
+    - name: Create database
+      mysql_db:
+        name: wp_db
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+  
+    - name: Create database user
+      mysql_user:
+        name: wp_user
+        password: "{{ mysql_user_password }}"
+        priv: "wp_db.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
